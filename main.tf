@@ -10,6 +10,11 @@ variable "vpc_flag" {
   default = false
 }
 
+variable "cidr" {
+  type    = string
+  default = "10.0.0.0/16"
+}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.0.0"
@@ -17,6 +22,7 @@ module "vpc" {
 
   name                 = "${var.stage}-vpc"
   cidr                 = "10.0.0.0/16"
+# cidr                 = var.cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
 
