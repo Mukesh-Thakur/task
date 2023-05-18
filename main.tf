@@ -1,129 +1,55 @@
-# variables.tf
+# main.tf
+# Create VPC module if vpc_create flag is true
+module "vpc" {
+  source = "terraform-aws-modules/vpc/aws"
+  #version = "4.0.0"
+  # Conditionally create the VPC module based on the vpc_create flag
+  count = var.vpc_create ? 1 : 0
 
-# Configure provider (AWS in this example)
-provider "aws" {
-  region = "us-east-1"
+  name                          = "${var.stage}-vpc"
+  cidr                          = var.vpc_cidr
+  azs                           = ["us-east-1a", "us-east-1b"]
+  enable_nat_gateway            = true
+  single_nat_gateway            = true
+  enable_vpn_gateway            = false
+  enable_dns_hostnames          = true
+  enable_dns_support            = true
+  public_dedicated_network_acl  = true #var.public_dedicated_network_acl
+  private_dedicated_network_acl = true #var.private_dedicated_network_acl
+  public_subnets                = var.public_subnet_cidrs
+  private_subnets               = var.private_subnet_cidrs
+  public_inbound_acl_rules      = var.public_inbound_acl_rules
+  public_outbound_acl_rules     = var.public_outbound_acl_rules
+  private_inbound_acl_rules     = var.private_inbound_acl_rules
+  private_outbound_acl_rules    = var.private_outbound_acl_rules
 }
 
-variable "stage" {
-  type    = string
-  default = "dev"
+# Create Public Security Group
+module "public_sg" {
+  source      = "terraform-aws-modules/security-group/aws"
+  version     = "4.7.0"
+  name        = "pub-sg"
+  description = "Security Group with SSH port open for everybody (IPv4 CIDR), egress ports are all world open"
+  vpc_id      = module.vpc[0].vpc_id
+  # Ingress Rules & CIDR Blocks
+  ingress_rules       = ["all-all"]
+  ingress_cidr_blocks = ["0.0.0.0/0"]
+  # Egress Rule - all-all open
+  egress_rules = ["all-all"]
 }
 
-# Define variables
-variable "vpc_create" {
-  type    = bool
-  default = true
-}
+# Create private security group
+module "private_sg" {
+  source = "terraform-aws-modules/security-group/aws"
+  #version = "4.2.0"
+  version = "4.7.0"
 
-variable "vpc_name" {
-  type    = string
-  default = "my-vpc"
-}
-
-variable "vpc_cidr" {
-  type    = string
-  default = "10.0.0.0/16"
-}
-
-variable "public_subnet_cidrs" {
-  type    = list(string)
-  default = ["10.0.1.0/24", "10.0.2.0/24"]
-}
-
-variable "private_subnet_cidrs" {
-  type    = list(string)
-  default = ["10.0.3.0/24", "10.0.4.0/24"]
-}
-
-################################################################################
-# Private Network ACLs
-################################################################################
-
-variable "private_dedicated_network_acl" {
-  description = "Whether to use dedicated network ACL (not default) and custom rules for private subnets"
-  type        = bool
-  default     = false
-}
-
-variable "private_inbound_acl_rules" {
-  description = "Private subnets inbound network ACLs"
-  type        = list(map(string))
-  default = [
-    {
-      rule_number = 100
-      rule_action = "allow"
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_block  = "0.0.0.0/0"
-    },
-  ]
-}
-
-variable "private_outbound_acl_rules" {
-  description = "Private subnets outbound network ACLs"
-  type        = list(map(string))
-  default = [
-    {
-      rule_number = 100
-      rule_action = "allow"
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_block  = "0.0.0.0/0"
-    },
-  ]
-}
-
-variable "private_acl_tags" {
-  description = "Additional tags for the private subnets network ACL"
-  type        = map(string)
-  default     = {}
-}
-
-################################################################################
-# Public Network ACLs
-################################################################################
-
-variable "public_dedicated_network_acl" {
-  description = "Whether to use dedicated network ACL (not default) and custom rules for public subnets"
-  type        = bool
-  default     = false
-}
-
-variable "public_inbound_acl_rules" {
-  description = "Public subnets inbound network ACLs"
-  type        = list(map(string))
-  default = [
-    {
-      rule_number = 100
-      rule_action = "allow"
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_block  = "0.0.0.0/0"
-    },
-  ]
-}
-
-variable "public_outbound_acl_rules" {
-  description = "Public subnets outbound network ACLs"
-  type        = list(map(string))
-  default = [
-    {
-      rule_number = 100
-      rule_action = "allow"
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_block  = "0.0.0.0/0"
-    },
-  ]
-}
-
-variable "public_acl_tags" {
-  description = "Additional tags for the public subnets network ACL"
-  type        = map(string)
-  default     = {}
+  name        = "private_sg"
+  description = "Security Group with HTTP & SSH port open for entire VPC Block (IPv4 CIDR), egress ports are all world open"
+  vpc_id      = module.vpc[0].vpc_id
+  # Ingress Rules & CIDR Blocks
+  ingress_rules       = ["ssh-tcp", "http-80-tcp", "http-8080-tcp"]
+  ingress_cidr_blocks = [module.vpc[0].vpc_cidr_block]
+  # Egress Rule - all-all open
+  egress_rules = ["all-all"]
 }
