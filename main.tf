@@ -10,6 +10,8 @@ module "vpc" {
   azs                  = ["us-east-1a", "us-east-1b"]
   public_subnet_cidrs  = var.public_subnet_cidrs
   private_subnet_cidrs = var.private_subnet_cidrs
+  create_public_subnet = true
+  create_private_subnet = true
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_vpn_gateway   = false
@@ -21,7 +23,7 @@ module "public_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.0.0"
 
-  name        = "public-sg"
+  name        = "${var.stage}-public-sg"
   description = "Public security group"
   vpc_id      = var.vpc_id
 
@@ -51,7 +53,7 @@ module "private_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.0.0"
 
-  name        = "private-sg"
+  name        = "${var.stage}-private-sg"
   description = "Private security group"
   vpc_id      = var.vpc_id
 
@@ -81,7 +83,7 @@ module "public_nacl" {
   source  = "terraform-aws-modules/acl/aws"
   version = "2.1.0"
 
-  name        = "public-nacl"
+  name        = "${var.stage}-public-nacl"
   vpc_id      = var.vpc_id
   subnet_ids  = []  # Add the IDs of public subnets associated with this network ACL
 
@@ -117,7 +119,7 @@ module "private_nacl" {
   source  = "terraform-aws-modules/acl/aws"
   version = "2.1.0"
 
-  name        = "private-nacl"
+  name        = "${var.stage}-private-nacl"
   vpc_id      = var.vpc_id
   subnet_ids  = []  # Add the IDs of private subnets associated with this network ACL
 
