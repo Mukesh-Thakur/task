@@ -5,7 +5,7 @@ module "vpc" {
   # Conditionally create the VPC module based on the vpc_create flag
   count  = var.vpc_create ? 1 : 0
 
-  name                 = var.vpc_name
+  name                 = "${var.stage}-vpc"
   cidr                 = var.vpc_cidr
   azs                  = ["us-east-1a", "us-east-1b"]
   public_subnet_cidrs  = var.public_subnet_cidrs
@@ -21,7 +21,7 @@ module "vpc" {
 resource "aws_security_group" "public_sg" {
   count = var.vpc_create ? 1 : 0
 
-  name        = "public-sg"
+  name        = "${var.stage}-public-sg"
   description = "Security group for public instances"
   vpc_id      = module.vpc[0].vpc_id
 
