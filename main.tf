@@ -16,55 +16,134 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 }
+# Create public security group
+module "public_sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "4.0.0"
 
-# Create security group for public instances
-resource "aws_security_group" "public_sg" {
-  count = var.vpc_create ? 1 : 0
+  name        = "public-sg"
+  description = "Public security group"
+  vpc_id      = var.vpc_id
 
-  name        = "${var.stage}-public-sg"
-  description = "Security group for public instances"
-  vpc_id      = module.vpc[0].vpc_id
+  ingress_rules = [
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+    # Add more ingress rules as needed
+  ]
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  egress_rules = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+    # Add more egress rules as needed
+  ]
 }
 
-# Create security group for private instances
-resource "aws_security_group" "private_sg" {
-  count = var.vpc_create ? 1 : 0
+# Create private security group
+module "private_sg" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "4.0.0"
 
   name        = "private-sg"
-  description = "Security group for private instances"
-  vpc_id      = module.vpc[0].vpc_id
+  description = "Private security group"
+  vpc_id      = var.vpc_id
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  ingress_rules = [
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["10.0.0.0/16"]  # Replace with the CIDR block of your VPC
+    },
+    # Add more ingress rules as needed
+  ]
+
+  egress_rules = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+    # Add more egress rules as needed
+  ]
 }
 
-# Create network ACLs
-resource "aws_network_acl" "public_nacl" {
-  count = var.vpc_create ? 1 : 0
+# Create public network ACL
+module "public_nacl" {
+  source  = "terraform-aws-modules/acl/aws"
+  version = "2.1.0"
 
-  vpc_id = module.vpc[0].vpc_id
+  name        = "public-nacl"
+  vpc_id      = var.vpc_id
+  subnet_ids  = []  # Add the IDs of public subnets associated with this network ACL
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    rule_action = "allow"
-    cidr_block  = "0
+  # Ingress rules
+  ingress = [
+    {
+      rule_number   = 100
+      protocol      = "tcp"
+      rule_action   = "allow"
+      cidr_block    = "0.0.0.0/0"
+      from_port     = 80
+      to_port       = 80
+    },
+    # Add more ingress rules as needed
+  ]
+
+  # Egress rules
+  egress = [
+    {
+      rule_number   = 100
+      protocol      = "tcp"
+      rule_action   = "allow"
+      cidr_block    = "0.0.0.0/0"
+      from_port     = 0
+      to_port       = 65535
+    },
+    # Add more egress rules as needed
+  ]
+}
+
+# Create private network ACL
+module "private_nacl" {
+  source  = "terraform-aws-modules/acl/aws"
+  version = "2.1.0"
+
+  name        = "private-nacl"
+  vpc_id      = var.vpc_id
+  subnet_ids  = []  # Add the IDs of private subnets associated with this network ACL
+
+  # Ingress rules
+  ingress = [
+    {
+      rule_number   = 100
+      protocol      = "tcp"
+      rule_action   = "allow"
+      cidr_block    = "10.0.0.0/16"  # Replace with the CIDR block of your VPC
+      from_port     = 22
+      to_port       = 22
+    },
+    # Add more ingress rules as needed
+  ]
+
+  # Egress rules
+  egress = [
+    {
+      rule_number   = 100
+      protocol      = "tcp"
+      rule_action   = "allow"
+      cidr_block    = "0.0.0.0/0"
+      from_port     = 0
+      to_port       = 65535
+    },
+    # Add more egress rules as needed
+  ]
+}
