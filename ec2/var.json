@@ -1,0 +1,20 @@
+{
+  "asg_desired_capacity": 2,
+  "asg_max_size": 5,
+  "asg_min_size": 2,
+  "asg_name": "my-asg",
+  "create_autoscaling_group": false,
+  "create_ebs_volume": false,
+  "create_ec2_instance": true,
+  "create_elastic_ip": false,
+  "ebs_volume_size": 10,
+  "ebs_volume_type": "gp2",
+  "ec2_instance_ami": "ami-02eb7a4783e7e9317",
+  "ec2_instance_name": "my-ec2-instance",
+  "ec2_instance_tags": {},
+  "ec2_instance_type": "t2.micro",
+  "ec2_sg": "sg-12345678",
+  "launch_template_name": "example-lt",
+  "public_subnet_ids": "subnet-1235678",
+  "stage": "dev"
+}
