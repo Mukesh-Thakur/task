@@ -1,0 +1,63 @@
+{
+  "private_acl_tags": {},
+  "private_dedicated_network_acl": false,
+  "private_inbound_acl_rules": [
+    {
+      "cidr_block": "0.0.0.0/0",
+      "from_port": 0,
+      "protocol": "-1",
+      "rule_action": "allow",
+      "rule_number": 100,
+      "to_port": 0
+    }
+  ],
+  "private_outbound_acl_rules": [
+    {
+      "cidr_block": "0.0.0.0/0",
+      "from_port": 0,
+      "protocol": "-1",
+      "rule_action": "allow",
+      "rule_number": 100,
+      "to_port": 0
+    }
+  ],
+  "private_subnet_cidrs": [
+    "10.0.3.0/24",
+    "10.0.4.0/24"
+  ],
+  "public_acl_tags": {},
+  "public_dedicated_network_acl": false,
+  "public_inbound_acl_rules": [
+    {
+      "cidr_block": "0.0.0.0/0",
+      "from_port": 0,
+      "protocol": "-1",
+      "rule_action": "allow",
+      "rule_number": 100,
+      "to_port": 0
+    }
+  ],
+  "public_outbound_acl_rules": [
+    {
+      "cidr_block": "0.0.0.0/0",
+      "from_port": 0,
+      "protocol": "-1",
+      "rule_action": "allow",
+      "rule_number": 100,
+      "to_port": 0
+    }
+  ],
+  "public_subnet_cidrs": [
+    "10.0.1.0/24",
+    "10.0.2.0/24"
+  ],
+  "stage": "dev",
+  "vpc_cidr": "10.0.0.0/16",
+  "vpc_create": true,
+  "vpc_name": "my-vpc",
+  "enable_nat_gateway": true,
+  "single_nat_gateway": true,
+  "enable_vpn_gateway" : false,
+  "enable_dns_hostnames" : true,
+  "enable_dns_support" : true
+}
