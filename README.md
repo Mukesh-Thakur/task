@@ -3,6 +3,7 @@ Create VPC for multi staging and manage the VPC crteation using true/false condi
 
 
 ###### Initialize the Terraform project
+
 terraform init
 
 ###### Create the dev VPC if vpc_flag is true
