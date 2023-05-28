@@ -1,0 +1,19 @@
+{
+  "destination_bucket_name": "destination-bucket",
+  "domain_name": "example.com",
+  "key_administrators": [],
+  "key_aliases": [],
+  "key_description": "EC2 AutoScaling key usage",
+  "key_service_roles_for_autoscaling": [],
+  "key_usage": "ENCRYPT_DECRYPT",
+  "source_bucket_name": "source-bucket",
+  "source_bucket_prefix": "images",
+  "subject_alternative_names": [
+    "www.example.com"
+  ],
+  "tags": {
+    "Environment": "dev-json",
+    "Terraform": "true"
+  },
+  "zone_id": "us-east-1a"
+}
