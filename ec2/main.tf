@@ -45,19 +45,19 @@ module "asg" {
   source = "terraform-aws-modules/autoscaling/aws"
 
   name   = var.asg_name
-  create = true
+  create = var.create_asg
 
   # Launch configuration
   #launch_template = module.ec2_instance.launch_template.name
   launch_template_name        = var.launch_template_name
-  create_launch_template      = true
+  create_launch_template      = var.create_asg
   image_id                    = var.ec2_instance_ami
   instance_type               = var.ec2_instance_type
   instance_name               = var.ec2_instance_name
   security_groups             = [var.ec2_sg]
   iam_role_name               = "example-role"
-  create_iam_instance_profile = true
-  enable_monitoring           = true
+  create_iam_instance_profile = var.create_asg
+  enable_monitoring           = var.create_asg
   #key_name                   = var.key_name
   #iam_instance_profile_arn   = aws_iam_instance_profile.ec2-instance.arn
   #user_data_base64           = base64encode(local.user_data)
