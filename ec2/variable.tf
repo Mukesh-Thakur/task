@@ -50,10 +50,10 @@ variable "public_subnet_ids" {
   default     = "subnet-1235678"
 }
 
-variable "create_autoscaling_group" {
+variable "create_asg" {
   description = "Flag to create Autoscaling Group"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "asg_name" {
