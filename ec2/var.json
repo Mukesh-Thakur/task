@@ -9,6 +9,8 @@
   "create_elastic_ip": false,
   "ebs_volume_size": 10,
   "ebs_volume_type": "gp2",
+  "ec2-count": 4,
+  "eip-count": 2,
   "ec2_instance_ami": "ami-02eb7a4783e7e9317",
   "ec2_instance_name": "my-ec2-instance-json",
   "ec2_instance_tags": {},
