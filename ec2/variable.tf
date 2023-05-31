@@ -14,6 +14,18 @@ variable "stage" {
   default = "dev"
 }
 
+variable "ec2-count" {
+  description = "Total Number of instances needs to be created"
+  type        = number
+  default     = 4
+}
+
+variable "eip-count" {
+  description = "Total Number of instances needs to be created"
+  type        = number
+  default     = 2
+}
+
 variable "ec2_instance_name" {
   description = "Name of the EC2 instance"
   type        = string
