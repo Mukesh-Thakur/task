@@ -12,7 +12,8 @@ module "s3_bucket" {
 module "ec2_instance" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
-  name = "${var.stage}-ec2"
+  name  = "${var.stage}-ec2"
+  count = var.ec2-count
 
   instance_type          = "t2.micro"
   ami                    = var.ec2_instance_ami
@@ -28,7 +29,9 @@ module "ec2_instance" {
 
 # To create and map EIP with ec2
 resource "aws_eip" "example" {
-  vpc = true
+  #count = var.instance_count
+  count = var.eip-count
+  vpc   = true
 
   tags = {
     Name = "example-eip"
@@ -36,8 +39,9 @@ resource "aws_eip" "example" {
 }
 
 resource "aws_eip_association" "example" {
-  instance_id   = module.ec2_instance.id[0]
-  allocation_id = aws_eip.example.id
+  count         = var.eip-count
+  instance_id   = module.ec2_instance[count.index].id
+  allocation_id = aws_eip.example[count.index].id
 }
 
 # To create ASG and map EBS to ec2
