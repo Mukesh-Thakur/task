@@ -1,105 +1,83 @@
 module "ecs" {
   source = "terraform-aws-modules/ecs/aws"
 
-  cluster_name = "ecs-integrated"
+  cluster_name = var.cluster_name
 
   cluster_configuration = {
     execute_command_configuration = {
-      logging = "OVERRIDE"
+      logging = var.cluster_logging
       log_configuration = {
-        cloud_watch_log_group_name = "/aws/ecs/aws-ec2"
+        cloud_watch_log_group_name = var.log_group_name
       }
     }
   }
 
-  fargate_capacity_providers = {
-    FARGATE = {
-      default_capacity_provider_strategy = {
-        weight = 50
-      }
-    }
-    FARGATE_SPOT = {
-      default_capacity_provider_strategy = {
-        weight = 50
-      }
-    }
-  }
+  fargate_capacity_providers = var.fargate_capacity_providers
 
   services = {
     ecsdemo-frontend = {
-      cpu    = 1024
-      memory = 4096
+      cpu    = var.frontend_cpu
+      memory = var.frontend_memory
 
       # Container definition(s)
       container_definitions = {
-
         fluent-bit = {
-          cpu       = 512
-          memory    = 1024
+          cpu       = var.fluent_bit_cpu
+          memory    = var.fluent_bit_memory
           essential = true
-          image     = "906394416424.dkr.ecr.us-west-2.amazonaws.com/aws-for-fluent-bit:stable"
+          image     = var.fluent_bit_image
           firelens_configuration = {
             type = "fluentbit"
           }
-          memory_reservation = 50
+          memory_reservation = var.fluent_bit_memory_reservation
         }
 
         ecs-sample = {
-          cpu       = 512
-          memory    = 1024
+          cpu       = var.ecs_sample_cpu
+          memory    = var.ecs_sample_memory
           essential = true
-          image     = "public.ecr.aws/aws-containers/ecsdemo-frontend:776fd50"
+          image     = var.ecs_sample_image
           port_mappings = [
             {
               name          = "ecs-sample"
-              containerPort = 80
+              containerPort = var.ecs_sample_container_port
               protocol      = "tcp"
             }
           ]
-
-          # Example image used requires access to write to root filesystem
-          readonly_root_filesystem = false
-
-          dependencies = [{
-            containerName = "fluent-bit"
-            condition     = "START"
-          }]
-
-          enable_cloudwatch_logging = false
+          readonly_root_filesystem = var.ecs_sample_readonly_root_filesystem
+          dependencies = [
+            {
+              containerName = "fluent-bit"
+              condition     = "START"
+            }
+          ]
+          enable_cloudwatch_logging = var.ecs_sample_enable_cloudwatch_logging
           log_configuration = {
-            logDriver = "awsfirelens"
+            logDriver = var.ecs_sample_log_driver
             options = {
-              Name                    = "firehose"
-              region                  = "eu-west-1"
-              delivery_stream         = "my-stream"
-              log-driver-buffer-limit = "2097152"
+              Name                    = var.ecs_sample_log_driver_name
+              region                  = var.ecs_sample_log_driver_region
+              delivery_stream         = var.ecs_sample_log_driver_delivery_stream
+              log-driver-buffer-limit = var.ecs_sample_log_driver_buffer_limit
             }
           }
-          memory_reservation = 100
+          memory_reservation = var.ecs_sample_memory_reservation
         }
       }
 
       service_connect_configuration = {
-        namespace = "example"
+        namespace = var.service_connect_namespace
         service = {
           client_alias = {
-            port     = 80
-            dns_name = "ecs-sample"
+            port     = var.service_connect_port
+            dns_name = var.service_connect_dns_name
           }
-          port_name      = "ecs-sample"
-          discovery_name = "ecs-sample"
+          port_name      = var.service_connect_port_name
+          discovery_name = var.service_connect_discovery_name
         }
       }
 
-      #      load_balancer = {
-      #        service = {
-      #          target_group_arn = "arn:aws:elasticloadbalancing:eu-west-1:1234567890:targetgroup/bluegreentarget1/209a844cd01825a4"
-      #          container_name   = "ecs-sample"
-      #          container_port   = 80
-      #        }
-      #      }
-
-      subnet_ids = ["subnet-0b95719f5c8f3d6ad"]
+      subnet_ids = ["subnet-xxxxxxx"]
       security_group_rules = {
         alb_ingress_3000 = {
           type                     = "ingress"
@@ -119,9 +97,5 @@ module "ecs" {
       }
     }
   }
-
-  tags = {
-    Environment = "Development"
-    Project     = "Example"
-  }
+  tags = var.tags
 }
