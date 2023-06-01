@@ -1,0 +1,69 @@
+{
+  "cluster_logging": "OVERRIDE",
+  "cluster_name": "ecs-integrated",
+  "ecs_sample_container_port": 80,
+  "ecs_sample_cpu": 512,
+  "ecs_sample_enable_cloudwatch_logging": false,
+  "ecs_sample_image": "public.ecr.aws/aws-containers/ecsdemo-frontend:776fd50",
+  "ecs_sample_log_driver": "awsfirelens",
+  "ecs_sample_log_driver_buffer_limit": "2097152",
+  "ecs_sample_log_driver_delivery_stream": "my-stream",
+  "ecs_sample_log_driver_name": "firehose",
+  "ecs_sample_log_driver_region": "eu-west-1",
+  "ecs_sample_memory": 1024,
+  "ecs_sample_memory_reservation": 100,
+  "ecs_sample_readonly_root_filesystem": false,
+  "fargate_capacity_providers": {
+    "FARGATE": {
+      "default_capacity_provider_strategy": {
+        "weight": 50
+      }
+    },
+    "FARGATE_SPOT": {
+      "default_capacity_provider_strategy": {
+        "weight": 50
+      }
+    }
+  },
+  "fluent_bit_cpu": 512,
+  "fluent_bit_image": "906394416424.dkr.ecr.us-west-2.amazonaws.com/aws-for-fluent-bit:stable",
+  "fluent_bit_memory": 1024,
+  "fluent_bit_memory_reservation": 50,
+  "frontend_cpu": 1024,
+  "frontend_memory": 4096,
+  "log_group_name": "/aws/ecs/aws-ec2",
+  "security_group_rules": {
+    "alb_ingress_3000": {
+      "cidr_blocks": [],
+      "description": "ingress Service port",
+      "from_port": 80,
+      "protocol": "tcp",
+      "source_security_group_id": "sg-12345678",
+      "to_port": 80,
+      "type": "ingress"
+    },
+    "egress_all": {
+      "cidr_blocks": [
+        "0.0.0.0/0"
+      ],
+      "description": "egress Service port",
+      "from_port": 0,
+      "protocol": "-1",
+      "source_security_group_id": "sg-12345678",
+      "to_port": 0,
+      "type": "egress"
+    }
+  },
+  "service_connect_discovery_name": "ecs-sample",
+  "service_connect_dns_name": "ecs-sample",
+  "service_connect_namespace": "example",
+  "service_connect_port": 80,
+  "service_connect_port_name": "ecs-sample",
+  "subnet_ids": [
+    "subnet-0b95719f5c8f3d6ad"
+  ],
+  "tags": {
+    "Environment": "Development",
+    "Project": "Example"
+  }
+}
