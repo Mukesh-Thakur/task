@@ -60,7 +60,7 @@
   "service_connect_port": 80,
   "service_connect_port_name": "ecs-sample",
   "subnet_ids": [
-    "subnet-0b95719f5c8f3d6ad"
+    "subnet-xxxxxxxx"
   ],
   "tags": {
     "Environment": "Development",
