@@ -182,7 +182,7 @@ variable "service_connect_discovery_name" {
 variable "subnet_ids" {
   description = "List of subnet IDs where the ECS service will be deployed"
   type        = list(string)
-  default     = ["subnet-0b95719f5c8f3d6ad"]
+  default     = ["subnet-0b95719f5cxxxxx"]
 }
 
 variable "tags" {
