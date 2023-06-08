@@ -185,18 +185,25 @@ variable "subnet_ids" {
   default     = ["subnet-0b95719f5c8f3d6ad"]
 }
 
-
+variable "tags" {
+  description = "Additional tags for the resources"
+  type        = map(string)
+  default = {
+    Environment = "Development"
+    Project     = "Example"
+  }
+}
 
 variable "security_group_rules" {
-  description = "Map of security group rules for the ECS service"
+  description = "Security group rules for the ECS service"
   type = map(object({
     type                     = string
     from_port                = number
     to_port                  = number
     protocol                 = string
-    description              = string
-    source_security_group_id = string
-    cidr_blocks              = list(string)
+    description              = optional(string)
+    source_security_group_id = optional(string)
+    cidr_blocks              = optional(list(string))
   }))
   default = {
     alb_ingress_3000 = {
@@ -204,27 +211,18 @@ variable "security_group_rules" {
       from_port                = 80
       to_port                  = 80
       protocol                 = "tcp"
-      description              = "ingress Service port"
+      description              = "Service port"
       source_security_group_id = "sg-12345678"
-      cidr_blocks              = []
+      cidr_blocks              = null # Set it to null or provide a valid CIDR block if required
     }
     egress_all = {
       type                     = "egress"
       from_port                = 0
       to_port                  = 0
       protocol                 = "-1"
-      description              = "egress Service port"
+      description              = "Egress all traffic"
+      source_security_group_id = null # Set it to null or provide a valid source security group ID if required
       cidr_blocks              = ["0.0.0.0/0"]
-      source_security_group_id = "sg-12345678"
     }
-  }
-}
-
-variable "tags" {
-  description = "Additional tags for the resources"
-  type        = map(string)
-  default = {
-    Environment = "Development"
-    Project     = "Example"
   }
 }
