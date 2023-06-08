@@ -34,8 +34,8 @@
   "log_group_name": "/aws/ecs/aws-ec2",
   "security_group_rules": {
     "alb_ingress_3000": {
-      "cidr_blocks": [],
-      "description": "ingress Service port",
+      "cidr_blocks": null,
+      "description": "Service port",
       "from_port": 80,
       "protocol": "tcp",
       "source_security_group_id": "sg-12345678",
@@ -46,10 +46,10 @@
       "cidr_blocks": [
         "0.0.0.0/0"
       ],
-      "description": "egress Service port",
+      "description": "Egress all traffic",
       "from_port": 0,
       "protocol": "-1",
-      "source_security_group_id": "sg-12345678",
+      "source_security_group_id": null,
       "to_port": 0,
       "type": "egress"
     }
