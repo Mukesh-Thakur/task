@@ -1324,6 +1324,39 @@ variable "default_vpc_tags" {
   default     = {}
 }
 
+variable "manage_default_security_group_second" {
+  description = "Should be true to adopt and manage default security group"
+  type        = bool
+  default     = true
+}
+
+variable "default_security_group_name_second" {
+  description = "Name to be used on the default security group"
+  type        = string
+  default     = "custom-sg"
+}
+
+variable "default_security_group_ingress_second" {
+  description = "List of maps of ingress rules to set on the default security group"
+  type        = list(map(string))
+  default = [
+    {
+      rule_no    = 100
+      action     = "allow"
+      from_port  = 0
+      to_port    = 0
+      protocol   = "-1"
+      cidr_block = "192.0.0.0/0"
+    },
+  ]
+}
+
+variable "default_security_group_egress_second" {
+  description = "List of maps of egress rules to set on the default security group"
+  type        = list(map(string))
+  default     = []
+}
+
 variable "manage_default_security_group" {
   description = "Should be true to adopt and manage default security group"
   type        = bool
@@ -1333,7 +1366,7 @@ variable "manage_default_security_group" {
 variable "default_security_group_name" {
   description = "Name to be used on the default security group"
   type        = string
-  default     = null
+  default     = "default-sg"
 }
 
 variable "default_security_group_ingress" {
