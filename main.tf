@@ -1,27 +1,29 @@
 # main.tf
 # Create VPC module if vpc_create flag is true
 module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+  source = "../test/"
   #version = "4.0.0"
   # Conditionally create the VPC module based on the vpc_create flag
   count = var.vpc_create ? 1 : 0
 
-  name                          = "${var.stage}-vpc"
-  cidr                          = var.vpc_cidr
-  azs                           = ["us-east-1a", "us-east-1b"]
-  enable_nat_gateway            = true
-  single_nat_gateway            = true
-  enable_vpn_gateway            = false
-  enable_dns_hostnames          = true
-  enable_dns_support            = true
-  public_dedicated_network_acl  = true #var.public_dedicated_network_acl
-  private_dedicated_network_acl = true #var.private_dedicated_network_acl
-  public_subnets                = var.public_subnet_cidrs
-  private_subnets               = var.private_subnet_cidrs
-  public_inbound_acl_rules      = var.public_inbound_acl_rules
-  public_outbound_acl_rules     = var.public_outbound_acl_rules
-  private_inbound_acl_rules     = var.private_inbound_acl_rules
-  private_outbound_acl_rules    = var.private_outbound_acl_rules
+  name                                 = "${var.stage}-vpc"
+  cidr                                 = var.vpc_cidr
+  azs                                  = ["us-east-1a", "us-east-1b"]
+  enable_nat_gateway                   = var.enable_nat_gateway
+  single_nat_gateway                   = var.single_nat_gateway
+  enable_vpn_gateway                   = var.enable_vpn_gateway
+  enable_dns_hostnames                 = var.enable_dns_hostnames
+  enable_dns_support                   = var.enable_dns_support
+  public_dedicated_network_acl         = var.public_dedicated_network_acl
+  private_dedicated_network_acl        = var.private_dedicated_network_acl
+  public_subnets                       = var.public_subnet_cidrs
+  private_subnets                      = var.private_subnet_cidrs
+  public_inbound_acl_rules             = var.public_inbound_acl_rules
+  public_outbound_acl_rules            = var.public_outbound_acl_rules
+  private_inbound_acl_rules            = var.private_inbound_acl_rules
+  private_outbound_acl_rules           = var.private_outbound_acl_rules
+  manage_default_security_group        = true
+  manage_default_security_group_second = true
 }
 
 # Create Public Security Group
