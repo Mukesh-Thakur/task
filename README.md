@@ -20,3 +20,4 @@ terraform apply -var-file=prod.tfvars
 
 
 In this example, the vpc_flag variable is used to conditionally create the VPC resource. If vpc_flag is set to true in the respective .tfvars file, the VPC resource will be created. Otherwise, it will be skipped (count = 0). The stage variable is used to define the stage for each workspace, and it can be customized in the respective .tfvars files.
+# file updated
