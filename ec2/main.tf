@@ -21,6 +21,15 @@ module "ec2_instance" {
   monitoring             = true
   vpc_security_group_ids = ["sg-12345678"]
   subnet_id              = "subnet-eddcdzz4" #module.vpc.private_subnets
+  user_data = <<-EOF
+    #!/bin/bash
+    yum update -y
+    yum install -y java-1.8.0-openjdk
+    yum install -y tomcat
+
+    systemctl enable tomcat
+    systemctl start tomcat
+  EOF
   tags = {
     Terraform   = "true"
     Environment = "dev"
@@ -48,22 +57,34 @@ resource "aws_eip_association" "example" {
 module "asg" {
   source = "terraform-aws-modules/autoscaling/aws"
 
-  name   = var.asg_name
+  name   = "${var.stage}-asg"
   create = var.create_asg
 
+# Use the existing EC2 instance as the launch configuration
   # Launch configuration
+  # instance_id =  module.ec2_instance[count.index].id
   #launch_template = module.ec2_instance.launch_template.name
   launch_template_name        = var.launch_template_name
   create_launch_template      = var.create_asg
   image_id                    = var.ec2_instance_ami
   instance_type               = var.ec2_instance_type
-  instance_name               = var.ec2_instance_name
+  instance_name               = "${var.stage}-lc-ec2"
   security_groups             = [var.ec2_sg]
   iam_role_name               = "example-role"
   create_iam_instance_profile = var.create_asg
   enable_monitoring           = var.create_asg
   #key_name                   = var.key_name
   #iam_instance_profile_arn   = aws_iam_instance_profile.ec2-instance.arn
+  user_data = <<-EOF
+    #!/bin/bash
+    yum update -y
+    yum install -y java-1.8.0-openjdk
+    yum install -y tomcat
+
+    systemctl enable tomcat
+    systemctl start tomcat
+  EOF
+
   #user_data_base64           = base64encode(local.user_data)
 
 
