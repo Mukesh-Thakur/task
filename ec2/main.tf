@@ -29,6 +29,10 @@ module "ec2_instance" {
 
     systemctl enable tomcat
     systemctl start tomcat
+    # Deploy custom welcome page
+    echo "<html><body><h1>Welcome to My Website!</h1></body></html>" > /usr/share/tomcat/webapps/ROOT/index.html
+    chown tomcat:tomcat /usr/share/tomcat/webapps/ROOT/index.html
+    systemctl restart tomcat
   EOF
   tags = {
     Terraform   = "true"
@@ -83,6 +87,10 @@ module "asg" {
 
     systemctl enable tomcat
     systemctl start tomcat
+    # Deploy custom welcome page
+    echo "<html><body><h1>Welcome to My Website!</h1></body></html>" > /usr/share/tomcat/webapps/ROOT/index.html
+    chown tomcat:tomcat /usr/share/tomcat/webapps/ROOT/index.html
+    systemctl restart tomcat
   EOF
 
   #user_data_base64           = base64encode(local.user_data)
