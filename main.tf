@@ -16,12 +16,15 @@ module "vpc" {
   enable_dns_support                   = var.enable_dns_support
   public_dedicated_network_acl         = var.public_dedicated_network_acl
   private_dedicated_network_acl        = var.private_dedicated_network_acl
+  public_subnet_names                 = "${var.stage}-public-subnet"
   public_subnets                       = var.public_subnet_cidrs
+  private_subnet_names                 = "${var.stage}-private-subnet"
   private_subnets                      = var.private_subnet_cidrs
   public_inbound_acl_rules             = var.public_inbound_acl_rules
   public_outbound_acl_rules            = var.public_outbound_acl_rules
   private_inbound_acl_rules            = var.private_inbound_acl_rules
   private_outbound_acl_rules           = var.private_outbound_acl_rules
+  default_route_table_name             = "${var.stage}-route-table"
   manage_default_security_group        = true
   manage_default_security_group_second = true
 }
