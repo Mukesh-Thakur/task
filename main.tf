@@ -1,3 +1,9 @@
+
+locals {
+  name   = "dev"
+  }
+}
+
 # main.tf
 # Create VPC module if vpc_create flag is true
 module "vpc" {
@@ -6,7 +12,7 @@ module "vpc" {
   # Conditionally create the VPC module based on the vpc_create flag
   count = var.vpc_create ? 1 : 0
 
-  name                                 = "${var.stage}-vpc"
+  name                                 = "${var.stage}-vpc" #or ${local.name}-vpc
   cidr                                 = var.vpc_cidr
   azs                                  = ["us-east-1a", "us-east-1b"]
   enable_nat_gateway                   = var.enable_nat_gateway
@@ -16,9 +22,9 @@ module "vpc" {
   enable_dns_support                   = var.enable_dns_support
   public_dedicated_network_acl         = var.public_dedicated_network_acl
   private_dedicated_network_acl        = var.private_dedicated_network_acl
-  public_subnet_names                 = "${var.stage}-public-subnet"
+  public_subnet_names                  = ["${var.stage}-public-subnet"]
   public_subnets                       = var.public_subnet_cidrs
-  private_subnet_names                 = "${var.stage}-private-subnet"
+  private_subnet_names                 = ["${var.stage}-private-subnet"] 
   private_subnets                      = var.private_subnet_cidrs
   public_inbound_acl_rules             = var.public_inbound_acl_rules
   public_outbound_acl_rules            = var.public_outbound_acl_rules
