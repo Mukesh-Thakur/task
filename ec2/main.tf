@@ -78,15 +78,18 @@ module "asg" {
   user_data = <<-EOF
     #!/bin/bash
     yum update -y
-    yum install -y java-1.8.0-openjdk
-    yum install -y tomcat
-
-    systemctl enable tomcat
+    yum install -y java-11-openjdk-devel
+    cd /opt
+    wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.58/bin/apache-tomcat-9.0.58.tar.gz
+    tar -zxvf apache-tomcat-9.0.58.tar.gz
+    echo "JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" >> /etc/profile
+    source /etc/profile
+    chown -R tomcat:tomcat /opt/apache-tomcat-9.0.58
     systemctl start tomcat
-    # Deploy custom welcome page
-    echo "<html><body><h1>Welcome to My Website!</h1></body></html>" > /usr/share/tomcat/webapps/ROOT/index.html
+    systemctl enable tomcat
+    # Deploy custom welcome pagedsr*
+    echo "<html><body><h1>Welcome to My Website!</h1></body></html>" > /opt/apache-tomcat-9.0.58/webapps/ROOT/index.html
     chown tomcat:tomcat /usr/share/tomcat/webapps/ROOT/index.html
-    systemctl restart tomcat
   EOF
 
   #user_data_base64           = base64encode(local.user_data)
