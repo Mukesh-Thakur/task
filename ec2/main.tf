@@ -80,7 +80,7 @@ module "asg" {
     yum update -y
     yum install -y java-11-openjdk-devel
     cd /opt
-    wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.58/bin/apache-tomcat-9.0.58.tar.gz
+    wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.76/bin/apache-tomcat-9.0.76.tar.gz
     tar -zxvf apache-tomcat-9.0.58.tar.gz
     echo "JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" >> /etc/profile
     source /etc/profile
