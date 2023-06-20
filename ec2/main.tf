@@ -24,15 +24,11 @@ module "ec2_instance" {
   user_data = <<-EOF
     #!/bin/bash
     yum update -y
-    yum install -y java-1.8.0-openjdk
-    yum install -y tomcat
-
-    systemctl enable tomcat
-    systemctl start tomcat
+    yum install -y httpd
+    systemctl enable httpd
+    systemctl start httpd
     # Deploy custom welcome page
-    echo "<html><body><h1>Welcome to My Website!</h1></body></html>" > /usr/share/tomcat/webapps/ROOT/index.html
-    chown tomcat:tomcat /usr/share/tomcat/webapps/ROOT/index.html
-    systemctl restart tomcat
+    echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
   EOF
   tags = {
     Terraform   = "true"
