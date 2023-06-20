@@ -88,7 +88,7 @@ module "asg" {
     systemctl start tomcat
     systemctl enable tomcat
     # Deploy custom welcome pagedsr*
-    echo "<html><body><h1>Welcome to My Website!</h1></body></html>" > /opt/apache-tomcat-9.0.58/webapps/ROOT/index.html
+    echo "<html><body><h1>Welcome to My Website!</h1></body></html>" > /opt/apache-tomcat-9.0.76/webapps/ROOT/index.html
     chown tomcat:tomcat /usr/share/tomcat/webapps/ROOT/index.html
   EOF
 
