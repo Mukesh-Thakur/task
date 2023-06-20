@@ -30,7 +30,7 @@ module "vpc" {
 module "public_sg" {
   source      = "terraform-aws-modules/security-group/aws"
   version     = "4.7.0"
-  name        = "pub-sg"
+  name        = "${var.stage}-pub-sg"
   description = "Security Group with SSH port open for everybody (IPv4 CIDR), egress ports are all world open"
   vpc_id      = module.vpc[0].vpc_id
   # Ingress Rules & CIDR Blocks
@@ -46,7 +46,7 @@ module "private_sg" {
   #version = "4.2.0"
   version = "4.7.0"
 
-  name        = "private_sg"
+  name        = "${var.stage}-private_sg"
   description = "Security Group with HTTP & SSH port open for entire VPC Block (IPv4 CIDR), egress ports are all world open"
   vpc_id      = module.vpc[0].vpc_id
   # Ingress Rules & CIDR Blocks
