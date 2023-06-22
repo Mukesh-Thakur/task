@@ -21,15 +21,7 @@ module "ec2_instance" {
   monitoring             = true
   vpc_security_group_ids = ["sg-12345678"]
   subnet_id              = "subnet-eddcdzz4" #module.vpc.private_subnets
-  user_data = <<-EOF
-    #!/bin/bash
-    yum update -y
-    yum install -y httpd
-    systemctl enable httpd
-    systemctl start httpd
-    # Deploy custom welcome page
-    echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
-  EOF
+  user_data              = "${file("user_data.sh")}"
   tags = {
     Terraform   = "true"
     Environment = "dev"
@@ -75,26 +67,7 @@ module "asg" {
   enable_monitoring           = var.create_asg
   #key_name                   = var.key_name
   #iam_instance_profile_arn   = aws_iam_instance_profile.ec2-instance.arn
-  user_data = <<-EOF
-    #!/bin/bash
-    yum update -y
-    yum install -y java-11-openjdk-devel
-    cd /opt
-    wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.76/bin/apache-tomcat-9.0.76.tar.gz
-    tar -zxvf apache-tomcat-9.0.76.tar.gz
-    echo "JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" >> /etc/profile
-    source /etc/profile
-    chown -R tomcat:tomcat /opt/apache-tomcat-9.0.76
-    systemctl start tomcat
-    systemctl enable tomcat
-    # Deploy custom welcome pagedsr*
-    echo "<html><body><h1>Welcome to My Website!</h1></body></html>" > /opt/apache-tomcat-9.0.76/webapps/ROOT/index.html
-    chown tomcat:tomcat /usr/share/tomcat/webapps/ROOT/index.html
-  EOF
-
-  #user_data_base64           = base64encode(local.user_data)
-
-
+  user_data                   = base64encode("${file("user_data.sh")}")
 
   # Auto scaling group
   vpc_zone_identifier       = [var.public_subnet_ids]
