@@ -17,6 +17,26 @@ chmod +x /usr/local/bin/docker-compose
 docker run -d -p 8080:8080 --name tomcat -e TOMCAT_USERNAME=anil -e TOMCAT_PASSWORD=pass bitnami/tomcat:latest
 #docker run -d -p 80:80 nginx
 
+# jenkins setup
+cat > docker-jenkins-compose.yml <<EOL
+version: '3.7'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    ports:
+      - 8081:8080
+      - 50000:50000
+    container_name: jenkin-sample
+    volumes:
+      - /home/${myname}/jenkins_compose/jenkins_configuration:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+EOL
+
+docker-compose -f docker-jenkins-compose.yml up -d
+
+#wordpres setup
 cat > docker-compose.yml <<EOL
 version: '3'
 services:
