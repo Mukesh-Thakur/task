@@ -1,0 +1,13 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateEC2Instance",
+        "ec2:RunInstances"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
