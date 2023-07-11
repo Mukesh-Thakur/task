@@ -1,5 +1,5 @@
 module "iam" {
-  source = "../iam-module"
+  source = "./modules"
 
   users = {
     developers = {
